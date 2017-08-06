@@ -6,7 +6,7 @@ import com.vinzzz.algorithms.stdlib.StdIn;
  * @author <a href="mailto:viney@vinzzz.com">Viney Ugave</a>
  * @version 1.0
  */
-public class Ex_1_1_3 {
+public class Ex_1_1_03 {
 
     private static boolean checkIfEqual(int[] args) {
         if (!(args.length > 0)) return false;
