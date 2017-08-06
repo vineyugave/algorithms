@@ -3,6 +3,8 @@
 # From https://github.com/github/gitignore/blob/master/Gradle.gitignore
 .gradle
 /build/
+/gradlew.bat
+/.gradle/
 
 # Ignore Gradle GUI config
 gradle-app.setting
@@ -104,6 +106,4 @@ Icon
 Network Trash Folder
 Temporary Items
 .apdisk
-/.idea/workspace.xml
-/gradlew.bat
-/.gradle/
+

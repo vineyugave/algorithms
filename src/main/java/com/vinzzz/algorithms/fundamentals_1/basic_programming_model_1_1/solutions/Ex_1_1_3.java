@@ -1,12 +1,12 @@
-package com.vinzzz.algorithms.fundamentals_1.basic_programming_model_1_1;
+package com.vinzzz.algorithms.fundamentals_1.basic_programming_model_1_1.solutions;
 
-import com.vinzzz.algorithms.util.*;
+import com.vinzzz.algorithms.stdlib.StdIn;
 
 /**
  * @author <a href="mailto:viney@vinzzz.com">Viney Ugave</a>
  * @version 1.0
  */
-public class ex_1_1_3 {
+public class Ex_1_1_3 {
 
     private static boolean checkIfEqual(int[] args) {
         if (!(args.length > 0)) return false;
@@ -20,8 +20,7 @@ public class ex_1_1_3 {
     }
 
     public static void main(String[] args) {
-        //enter filename in command line arguments
-        int[] numbers = In.readInts(args[0]);
+        int[] numbers = StdIn.readInts();
 
         if (checkIfEqual(numbers))
             System.out.println("equal");
