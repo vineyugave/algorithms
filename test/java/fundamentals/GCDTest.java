@@ -1,6 +1,6 @@
 package fundamentals;
 
-import com.vinzzz.algorithms.fundamentals_1.basic_programming_model_1_1.GCD;
+import com.vinzzz.algorithms.i_fundamentals.a_basic_programming_model.GCD;
 import org.junit.Test;
 
 /**
