@@ -1,4 +1,4 @@
-package com.vinzzz.algorithms.i_fundamentals.a_basic_programming_model.solutions;
+package com.vinzzz.algorithms.i_fundamentals.a_basic_programming_model;
 
 /**
  * Binary Search

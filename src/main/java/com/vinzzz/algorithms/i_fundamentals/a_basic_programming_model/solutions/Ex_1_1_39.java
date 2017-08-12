@@ -1,5 +1,6 @@
 package com.vinzzz.algorithms.i_fundamentals.a_basic_programming_model.solutions;
 
+import com.vinzzz.algorithms.i_fundamentals.a_basic_programming_model.BinarySearch;
 import com.vinzzz.libs.stdlib.StdIn;
 import com.vinzzz.libs.stdlib.StdOut;
 import com.vinzzz.libs.stdlib.StdRandom;
