@@ -1,10 +1,11 @@
+import com.vinzzz.libs.stdlib.StdOut;
+
 public class Algorithms {
 
     public static void main(String[] args) {
-        int N = Integer.parseInt(args[0]);
-        double p = Double.parseDouble(args[1]);
-        p = Math.max(0, Math.min(1, p));
-
+        String s = "Hello World";
+        s.toUpperCase();
+        s.substring(6, 11);
+        StdOut.println(s);
     }
-
 }

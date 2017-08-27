@@ -1,6 +1,7 @@
-package com.vinzzz.libs.stdlib; /*************************************************************************
+/******************************************************************************
  *  Compilation:  javac Picture.java
  *  Execution:    java Picture imagename
+ *  Dependencies: none
  *
  *  Data type for manipulating individual pixels of an image. The original
  *  image can be read from a file in jpg, gif, or png format, or the
@@ -15,7 +16,12 @@ package com.vinzzz.libs.stdlib; /***********************************************
  *
  *   - see also GrayPicture.java for a grayscale version
  *
- *************************************************************************/
+ *   - should we add int getRGB(int x, int y) and settRGB(int x, int y, int argb)
+ *     for performance (to avoid creating of Color objects when important)?
+ *
+ ******************************************************************************/
+
+package com.vinzzz.libs.stdlib;
 
 import java.awt.Color;
 import java.awt.FileDialog;
@@ -39,42 +45,77 @@ import javax.swing.KeyStroke;
 
 /**
  *  This class provides methods for manipulating individual pixels of
- *  an image. The original image can be read from a file in JPEG, GIF,
- *  or PNG format, or the user can create a blank image of a given size.
+ *  an image. The original image can be read from a {@code .jpg}, {@code .gif},
+ *  or {@code .png} file or the user can create a blank image of a given size.
  *  This class includes methods for displaying the image in a window on
- *  the screen or saving to a file.
+ *  the screen or saving it to a file.
  *  <p>
- *  By default, pixel (x, y) is column x, row y, where (0, 0) is upper left.
- *  The method setOriginLowerLeft() change the origin to the lower left.
+ *  Pixel (<em>col</em>, <em>row</em>) is column <em>col</em> and row <em>row</em>.
+ *  By default, the origin (0, 0) is the pixel in the top-left corner,
+ *  which is a common convention in image processing.
+ *  The method {@code setOriginLowerLeft()} change the origin to the lower left.
  *  <p>
  *  For additional documentation, see
  *  <a href="http://introcs.cs.princeton.edu/31datatype">Section 3.1</a> of
- *  <i>Introduction to Programming in Java: An Interdisciplinary Approach</i>
+ *  <i>Computer Science: An Interdisciplinary Approach</i>
  *  by Robert Sedgewick and Kevin Wayne.
+ *
+ *  @author Robert Sedgewick
+ *  @author Kevin Wayne
  */
 public final class Picture implements ActionListener {
     private BufferedImage image;               // the rasterized image
     private JFrame frame;                      // on-screen view
     private String filename;                   // name of file
     private boolean isOriginUpperLeft = true;  // location of origin
-    private int width, height;                 // width and height
+    private final int width, height;           // width and height
 
    /**
-     * Create a blank w-by-h picture, where each pixel is black.
+     * Initializes a blank {@code width}-by-{@code height} picture, with {@code width} columns
+     * and {@code height} rows, where each pixel is black.
+     *
+     * @param width the width of the picture
+     * @param height the height of the picture
+     * @throws IllegalArgumentException if {@code width} is negative
+     * @throws IllegalArgumentException if {@code height} is negative
      */
-    public Picture(int w, int h) {
-        width = w;
-        height = h;
-        image = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
+    public Picture(int width, int height) {
+        if (width  < 0) throw new IllegalArgumentException("width must be nonnegative");
+        if (height < 0) throw new IllegalArgumentException("height must be nonnegative");
+        this.width  = width;
+        this.height = height;
+        image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
         // set to TYPE_INT_ARGB to support transparency
-        filename = w + "-by-" + h;
     }
 
    /**
-     * Create a picture by reading in a .png, .gif, or .jpg from
-     * the given filename or URL name.
+     * Initializes a new picture that is a deep copy of the argument picture.
+     *
+     * @param  picture the picture to copy
+     * @throws IllegalArgumentException if {@code picture} is {@code null}
+     */
+    public Picture(Picture picture) {
+        if (picture == null) throw new IllegalArgumentException("constructor argument is null");
+
+        width  = picture.width();
+        height = picture.height();
+        image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        filename = picture.filename;
+        for (int col = 0; col < width(); col++)
+            for (int row = 0; row < height(); row++)
+                image.setRGB(col, row, picture.get(col, row).getRGB());
+    }
+
+   /**
+     * Initializes a picture by reading from a file or URL.
+     *
+     * @param  filename the name of the file (.png, .gif, or .jpg) or URL.
+     * @throws IllegalArgumentException if cannot read image
+     * @throws IllegalArgumentException if {@code filename} is {@code null}
      */
     public Picture(String filename) {
+        if (filename == null) throw new IllegalArgumentException("constructor argument is null");
+
         this.filename = filename;
         try {
             // try to read from file in working directory
@@ -86,58 +127,76 @@ public final class Picture implements ActionListener {
             // now try to read from file in same directory as this .class file
             else {
                 URL url = getClass().getResource(filename);
-                if (url == null) { url = new URL(filename); }
+                if (url == null) {
+                    url = new URL(filename);
+                }
                 image = ImageIO.read(url);
             }
+
+            if (image == null) {
+                throw new IllegalArgumentException("could not read image file: " + filename);
+            }
+
             width  = image.getWidth(null);
             height = image.getHeight(null);
         }
-        catch (IOException e) {
-            // e.printStackTrace();
-            throw new RuntimeException("Could not open file: " + filename);
+        catch (IOException ioe) {
+            throw new IllegalArgumentException("could not open image file: " + filename, ioe);
         }
     }
 
    /**
-     * Create a picture by reading in a .png, .gif, or .jpg from a File.
+     * Initializes a picture by reading in a .png, .gif, or .jpg from a file.
+     *
+     * @param file the file
+     * @throws IllegalArgumentException if cannot read image
+     * @throws IllegalArgumentException if {@code file} is {@code null}
      */
     public Picture(File file) {
-        try { image = ImageIO.read(file); }
-        catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Could not open file: " + file);
+        if (file == null) throw new IllegalArgumentException("constructor argument is null");
+
+        try {
+            image = ImageIO.read(file);
+        }
+        catch (IOException ioe) {
+            throw new IllegalArgumentException("could not open file: " + file, ioe);
         }
         if (image == null) {
-            throw new RuntimeException("Invalid image file: " + file);
+            throw new IllegalArgumentException("could not read file: " + file);
         }
+        width  = image.getWidth(null);
+        height = image.getHeight(null);
+        filename = file.getName();
     }
 
    /**
-     * Return a JLabel containing this Picture, for embedding in a JPanel,
+     * Returns a JLabel containing this picture, for embedding in a JPanel,
      * JFrame or other GUI widget.
+     *
+     * @return the {@code JLabel}
      */
     public JLabel getJLabel() {
-        if (image == null) { return null; }         // no image available
+        if (image == null) return null;         // no image available
         ImageIcon icon = new ImageIcon(image);
         return new JLabel(icon);
     }
 
    /**
-     * Set the origin to be the upper left pixel.
+     * Sets the origin to be the upper left pixel. This is the default.
      */
     public void setOriginUpperLeft() {
         isOriginUpperLeft = true;
     }
 
    /**
-     * Set the origin to be the lower left pixel.
+     * Sets the origin to be the lower left pixel.
      */
     public void setOriginLowerLeft() {
         isOriginUpperLeft = false;
     }
 
    /**
-     * Display the picture in a window on the screen.
+     * Displays the picture in a window on the screen.
      */
     public void show() {
 
@@ -160,7 +219,8 @@ public final class Picture implements ActionListener {
             frame.setContentPane(getJLabel());
             // f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-            frame.setTitle(filename);
+            if (filename == null) frame.setTitle(width + "-by-" + height);
+            else                  frame.setTitle(filename);
             frame.setResizable(false);
             frame.pack();
             frame.setVisible(true);
@@ -171,72 +231,125 @@ public final class Picture implements ActionListener {
     }
 
    /**
-     * Return the height of the picture in pixels.
+     * Returns the height of the picture.
+     *
+     * @return the height of the picture (in pixels)
      */
     public int height() {
         return height;
     }
 
    /**
-     * Return the width of the picture in pixels.
+     * Returns the width of the picture.
+     *
+     * @return the width of the picture (in pixels)
      */
     public int width() {
         return width;
     }
 
-   /**
-     * Return the color of pixel (i, j).
-     */
-    public Color get(int i, int j) {
-        if (isOriginUpperLeft) return new Color(image.getRGB(i, j));
-        else                   return new Color(image.getRGB(i, height - j - 1));
+    private void validateRowIndex(int row) {
+        if (row < 0 || row >= height())
+            throw new IllegalArgumentException("row index must be between 0 and " + (height() - 1) + ": " + row);
+    }
+
+    private void validateColumnIndex(int col) {
+        if (col < 0 || col >= width())
+            throw new IllegalArgumentException("column index must be between 0 and " + (width() - 1) + ": " + col);
     }
 
    /**
-     * Set the color of pixel (i, j) to c.
+     * Returns the color of pixel ({@code col}, {@code row}).
+     *
+     * @param col the column index
+     * @param row the row index
+     * @return the color of pixel ({@code col}, {@code row})
+     * @throws IllegalArgumentException unless both {@code 0 <= col < width} and {@code 0 <= row < height}
      */
-    public void set(int i, int j, Color c) {
-        if (c == null) { throw new RuntimeException("can't set Color to null"); }
-        if (isOriginUpperLeft) image.setRGB(i, j, c.getRGB());
-        else                   image.setRGB(i, height - j - 1, c.getRGB());
+    public Color get(int col, int row) {
+        validateColumnIndex(col);
+        validateRowIndex(row);
+        if (isOriginUpperLeft) return new Color(image.getRGB(col, row));
+        else                   return new Color(image.getRGB(col, height - row - 1));
     }
 
    /**
-     * Is this Picture equal to obj?
+     * Sets the color of pixel ({@code col}, {@code row}) to given color.
+     *
+     * @param col the column index
+     * @param row the row index
+     * @param color the color
+     * @throws IllegalArgumentException unless both {@code 0 <= col < width} and {@code 0 <= row < height}
+     * @throws IllegalArgumentException if {@code color} is {@code null}
      */
-    public boolean equals(Object obj) {
-        if (obj == this) return true;
-        if (obj == null) return false;
-        if (obj.getClass() != this.getClass()) return false;
-        Picture that = (Picture) obj;
+    public void set(int col, int row, Color color) {
+        validateColumnIndex(col);
+        validateRowIndex(row);
+        if (color == null) throw new IllegalArgumentException("color argument is null");
+        if (isOriginUpperLeft) image.setRGB(col, row, color.getRGB());
+        else                   image.setRGB(col, height - row - 1, color.getRGB());
+    }
+
+   /**
+     * Returns true if this picture is equal to the argument picture.
+     *
+     * @param other the other picture
+     * @return {@code true} if this picture is the same dimension as {@code other}
+     *         and if all pixels have the same color; {@code false} otherwise
+     */
+    public boolean equals(Object other) {
+        if (other == this) return true;
+        if (other == null) return false;
+        if (other.getClass() != this.getClass()) return false;
+        Picture that = (Picture) other;
         if (this.width()  != that.width())  return false;
         if (this.height() != that.height()) return false;
-        for (int x = 0; x < width(); x++)
-            for (int y = 0; y < height(); y++)
-                if (!this.get(x, y).equals(that.get(x, y))) return false;
+        for (int col = 0; col < width(); col++)
+            for (int row = 0; row < height(); row++)
+                if (!this.get(col, row).equals(that.get(col, row))) return false;
         return true;
     }
 
-
-   /**
-     * Save the picture to a file in a standard image format.
-     * The filetype must be .png or .jpg.
+    /**
+     * This operation is not supported because pictures are mutable.
+     *
+     * @return does not return a value
+     * @throws UnsupportedOperationException if called
      */
-    public void save(String name) {
-        save(new File(name));
+    public int hashCode() {
+        throw new UnsupportedOperationException("hashCode() is not supported because pictures are mutable");
     }
 
    /**
-     * Save the picture to a file in a standard image format.
+     * Saves the picture to a file in a standard image format.
+     * The filetype must be .png or .jpg.
+     *
+     * @param filename the name of the file
+     * @throws IllegalArgumentException if {@code name} is {@code null}
+     */
+    public void save(String filename) {
+        if (filename == null) throw new IllegalArgumentException("argument to save() is null");
+        save(new File(filename));
+    }
+
+   /**
+     * Saves the picture to a file in a PNG or JPEG image format.
+     *
+     * @param  file the file
+     * @throws IllegalArgumentException if {@code file} is {@code null}
      */
     public void save(File file) {
-        this.filename = file.getName();
-        if (frame != null) { frame.setTitle(filename); }
+        if (file == null) throw new IllegalArgumentException("argument to save() is null");
+        filename = file.getName();
+        if (frame != null) frame.setTitle(filename);
         String suffix = filename.substring(filename.lastIndexOf('.') + 1);
-        suffix = suffix.toLowerCase();
-        if (suffix.equals("jpg") || suffix.equals("png")) {
-            try { ImageIO.write(image, suffix, file); }
-            catch (IOException e) { e.printStackTrace(); }
+        if ("jpg".equalsIgnoreCase(suffix) || "png".equalsIgnoreCase(suffix)) {
+            try {
+                ImageIO.write(image, suffix, file);
+            }
+            catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         else {
             System.out.println("Error: filename must end in .jpg or .png");
@@ -246,6 +359,7 @@ public final class Picture implements ActionListener {
    /**
      * Opens a save dialog box when the user selects "Save As" from the menu.
      */
+    @Override
     public void actionPerformed(ActionEvent e) {
         FileDialog chooser = new FileDialog(frame,
                              "Use a .png or .jpg extension", FileDialog.SAVE);
@@ -257,13 +371,41 @@ public final class Picture implements ActionListener {
 
 
    /**
-     * Test client. Reads a picture specified by the command-line argument,
+     * Unit tests this {@code Picture} data type.
+     * Reads a picture specified by the command-line argument,
      * and shows it in a window on the screen.
+     *
+     * @param args the command-line arguments
      */
     public static void main(String[] args) {
-        Picture pic = new Picture(args[0]);
-        System.out.printf("%d-by-%d\n", pic.width(), pic.height());
-        pic.show();
+        Picture picture = new Picture(args[0]);
+        System.out.printf("%d-by-%d\n", picture.width(), picture.height());
+        picture.show();
     }
 
 }
+
+
+/******************************************************************************
+ *  Copyright 2002-2016, Robert Sedgewick and Kevin Wayne.
+ *
+ *  This file is part of algs4.jar, which accompanies the textbook
+ *
+ *      Algorithms, 4th edition by Robert Sedgewick and Kevin Wayne,
+ *      Addison-Wesley Professional, 2011, ISBN 0-321-57351-X.
+ *      http://algs4.cs.princeton.edu
+ *
+ *
+ *  algs4.jar is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  algs4.jar is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with algs4.jar.  If not, see http://www.gnu.org/licenses.
+ ******************************************************************************/

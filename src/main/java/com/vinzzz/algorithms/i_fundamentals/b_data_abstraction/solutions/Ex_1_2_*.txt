@@ -1,0 +1,57 @@
+#1.2.1
+See java file
+
+#1.2.2
+See java file
+
+#1.2.3
+See java file
+
+#1.2.4
+world
+hello
+
+#1.2.5
+Hello World
+
+#1.2.6
+See java file
+
+#1.2.7
+reverse string
+
+#1.2.8
+It swaps them. It could hardly be more efficient because it does so by copying
+references, so that it is not necessary to copy millions of elements.
+
+#1.2.9
+See java file
+
+#1.2.10
+Check exercise java file or VisualCounter.java
+
+#1.2.11
+see java file
+
+#1.2.12
+see java file
+
+#1.2.13
+see java file
+
+#1.2.14
+refer same java file as #1.2.13
+
+#1.2.15
+See java file
+
+#1.2.16
+See Rational.java
+
+#1.2.17
+See Rational.java
+
+#1.2.18
+See java file
+
+#1.2.19
