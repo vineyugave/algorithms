@@ -12,7 +12,7 @@ import java.util.ArrayList;
  * @version 1.0
  */
 
-public class Ex_1_2_1 {
+public class Ex_1_2_01 {
 
     public static void main(String[] args) {
         int N = StdIn.readInt();

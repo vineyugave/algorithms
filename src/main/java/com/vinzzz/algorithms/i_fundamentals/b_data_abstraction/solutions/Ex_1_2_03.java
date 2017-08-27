@@ -13,7 +13,7 @@ import java.util.Arrays;
  * Source : https://github.com/morrxy/algs4/blob/master/exercise/1.2.03/Interval2D_client.java
  */
 
-public class Ex_1_2_3 {
+public class Ex_1_2_03 {
 
     public static void main(String[] args) {
         int N = 10;

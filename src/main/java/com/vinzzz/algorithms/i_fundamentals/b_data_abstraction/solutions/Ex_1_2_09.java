@@ -8,7 +8,7 @@ import com.vinzzz.libs.stdlib.StdOut;
  * @version 1.0
  */
 
-public class Ex_1_2_9 {
+public class Ex_1_2_09 {
 
     public static void main(String[] args) {
 

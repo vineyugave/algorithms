@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
  * @version 1.0
  */
 
-public class Ex_1_2_2 {
+public class Ex_1_2_02 {
     private static final Pattern WHITESPACE_PATTERN = Pattern.compile("\\p{javaWhitespace}+");
 
     public static void main(String[] args) {

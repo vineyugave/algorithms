@@ -7,7 +7,7 @@ import com.vinzzz.libs.stdlib.StdOut;
  * @version 1.0
  */
 
-public class Ex_1_2_6 {
+public class Ex_1_2_06 {
 
     public static void main(String[] args) {
         String s = "ACTGACG";
