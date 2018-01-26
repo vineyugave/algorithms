@@ -1,0 +1,209 @@
+#1.4.1
+N(N-1)(N-3)/3*2*1
+- substitute N= N+1 and prove = N(N-1)(N-3)/3*2*1 + C(N,2)
+
+#1.4.2
+BigInteger sum = BigInteger.valueOf(0);
+sum = sum.add(BigInteger.valueOf(a[i]));
+sum = sum.add(BigInteger.valueOf(a[j]));
+sum = sum.add(BigInteger.valueOf(a[k]));
+if(sum == BigInteger.valueOf(0)) count++;
+
+#1.4.3
+Skipping
+
+#1.4.4
+Skipping
+
+#1.4.5
+a. N
+b. 1
+c. 1
+d. 2N^3
+e. 1
+f. 2
+g. N^100
+
+#1.4.6
+a. NlogN
+b. NlogN(probably)
+c. NlogN(probably)
+
+#1.4.7
+2N^3
+
+#1.4.8
+
+int count =0;
+Array.Sort(a)[
+for(int i=0, i< a.length; i++){
+    if(BinarySearch.rank(-(a[i]), a)> i) count++;
+}
+Stdout.println("Count ="+ count);
+
+#1.4.9
+2^(nb)T
+
+#1.4.10
+int smallestIndexBinarySearch(int[] arr, int key, int low, int high){
+    if(low < high) return -1;
+
+    int mid = low + (high - low)/2;
+    if(key > arr[mid]){
+        smallestIndexBinarySearch(arr, key, mid, high)
+    } else if(key < arr[mid){
+        smallestIndexBinarySearch(arr, key, low, mid)
+    } else {
+         int tempSmallIndex = binarySearch(arr, key, 0, middle - 1);
+         if(tempSmallIndex == -1){
+            return mid;
+         } else {
+            return binarySearch(arr, key, 0, middle - 1);
+         }
+    }
+    return -1;
+}
+
+#1.4.11
+Find lowest index of occurence and highest index of occurence. count = highest - lowest + 1;
+
+#1.4.12
+for(int i=0; i < arr1.length; i++){
+    int rank = binarySearch(arr2.length, arr1[i]);
+    if(rank > -1){
+        Stdout.println(arr1[i]);
+    }
+}
+
+#1.4.13
+a. int
+b. String + Date + Time
+c. 2 * Double
+d. 2 * Double
+e. 2 * (2*Double)
+
+#1.4.14
+// 4 sum
+for(int i=0; i<array.length; i++) {
+            for (int j=i+1; j<array.length; j++){
+                for(int k=j+1; k<array.length; k++){
+
+                    int searchElement = -1 * (array[i] + array[j] + array[k]);
+                    int elementIndex = binarySearch(array, searchElement, 0, array.length);
+                    if(elementIndex > k) {
+                        StdOut.println("" + array[i] +  " " + array[j] +  " " + array[k] +  " " + array[elementIndex]);
+                        count++;
+                    }
+                }
+            }
+}
+
+#1.4.15
+
+Refer : https://github.com/reneargento/algorithms-sedgewick-wayne/blob/master/src/chapter1/section4/Exercise15_2_ThreeSumFaster.java
+
+#1.4.16
+private static double[] closestPair(double[] array) {
+        double[] closestPair = new double[2];
+
+        double currentMinimumDifference = Double.MAX_VALUE;
+
+        Arrays.sort(array);
+
+        for(int i=0; i < array.length - 1; i++) {
+            if (Math.abs(array[i] - array[i + 1]) < currentMinimumDifference) {
+                currentMinimumDifference = Math.abs(array[i] - array[i + 1]);
+
+                closestPair[0] = array[i];
+                closestPair[1] = array[i+1];
+            }
+        }
+
+        return closestPair;
+}
+
+#1.4.17
+just find the min and max value in the array
+
+#1.4.18
+
+//assumption all distinct ints
+private static int[] findLocalMinima(int[] a) {
+    int[] result = new int[3];
+
+    if(a.size == 1){
+        result[0] = a[0];
+    }else if (a.length == 2){
+        if(a[0]<a[1]) {
+          result[0] = a[0];
+          result[1] = a[1];
+        }
+    }else if (a.length > 2){
+        int low = 0;
+        int high = a.length;
+
+        while(low < high){
+            mid = low + (high - low)/2;
+
+            if(!(mid == 0 || mid == a.length)){
+                if(a[mid-1]<a[mid] && a[mid+1]>a[mid]){
+                    //jackpot
+                    result[0] = a[mid-1];
+                    result[1] = a[mid];
+                    result[2] = a[mid+1];
+
+                }else if(a[mid-1]<a[mid]){
+                    high = mid - 1 ;
+                }else if(a[mid+1]>a[mid]){
+                    low = mid + 1;
+                }
+            }
+        }
+    }
+
+    return result;
+}
+
+#1.4.19
+
+//assumption NxN matrix and matrix 3x3 and above and positive integers only
+private static void findLocalMinima(int[][] a){
+    for(int i = 0; i< a.length; i++){
+        int rowLocalMinima = -1;
+        // update findLocalMinima in 1.4.18 to return the index
+        // of the center instead of the elements
+        rowLocalMinimaIndex = findLocalMinima(a[i]);
+        if(rowLocalMinimaIndex > -1 ){
+            int[] columnArray = new int[a.length];
+            for(int j =0; j < a.length; j++){
+                // copy the column in an array
+                columnArray[j] = a[i][j];
+            }
+
+            int columnLocalMinimaIndex = -1;
+            columnLocalMinimaIndex = findLocalMinima(columnArray);
+            if(columnLocalMinimaIndex == i){
+                Stdout.println("row,cloumn = "+i+","+j);
+                return;
+            }
+        }
+    }
+}
+
+#1.4.20
+See : https://www.geeksforgeeks.org/find-element-bitonic-array/
+
+#1.4.21
+Simple binary search
+
+#1.4.22
+Fibonacci Search see : https://www.geeksforgeeks.org/fibonacci-search/
+
+#1.4.23
+skipping
+
+#1.4.24
+Basic : use binary search to search for floor where the egg does not break while n+1 the egg breaks. logN
+
+
+
