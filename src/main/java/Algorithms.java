@@ -1,23 +1,27 @@
-import com.sun.tools.javac.util.Pair;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
+import java.util.*;
 
 public class Algorithms {
 
     public static void main(String[] args) {
-        String s = "Hello World";
-        int[][] temp = new int[3][3];
-        temp[0] = new int[]{1, 2, 3};
-        System.out.println(7/2);
 
-        isValidFormat("yyyy-MM-dd", "2018-12-19");
 
+
+        String paragraph = "Bob hit a ball, the hit BALL flew far after it was hit.";
+        String[] words =  paragraph.replaceAll("\\p{P}"," ").split("\\s+");
+        System.out.println(Arrays.asList(words).toString());
+
+        Set<String> wordSet = new HashSet<>(Arrays.asList(words));
+        System.out.println(wordSet.toString());
+
+        Map<Integer, List<Integer>>userMap = new HashMap<>();
+        userMap.get(5).add(4);
+        List<Integer> list = new ArrayList<>();
+        ((ArrayList<Integer>) list).clone();
     }
 
-    public static boolean isValidFormat(String format, String value) {
+    private static boolean isValidFormat(String format, String value) {
         Date date = null;
         try {
             SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.getDefault());

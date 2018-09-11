@@ -513,19 +513,34 @@ public class BST<Key extends Comparable<Key>, Value> {
      * @param args the command-line arguments
      */
     public static void main(String[] args) { 
-        BST<String, Integer> st = new BST<String, Integer>();
-        for (int i = 0; !StdIn.isEmpty(); i++) {
-            String key = StdIn.readString();
-            st.put(key, i);
-        }
+//        BST<String, Integer> st = new BST<String, Integer>();
+//        for (int i = 0; !StdIn.isEmpty(); i++) {
+//            String key = StdIn.readString();
+//            st.put(key, i);
+//        }
+//
+//        for (String s : st.levelOrder())
+//            StdOut.println(s + " " + st.get(s));
+//
+//        StdOut.println();
+//
+//        for (String s : st.keys())
+//            StdOut.println(s + " " + st.get(s));
 
-        for (String s : st.levelOrder())
-            StdOut.println(s + " " + st.get(s));
+        BST<String, Integer> bst = new BST<>();
+        bst.put("e", 5);
+        bst.put("f", 6);
+        bst.put("g", 7);
+        bst.put("a", 1);
+        bst.put("b", 2);
+        bst.put("c", 3);
+        bst.put("z", 8);
+        bst.put("d", 4);
 
-        StdOut.println();
 
-        for (String s : st.keys())
-            StdOut.println(s + " " + st.get(s));
+        System.out.println("Value of g :" + bst.get("g"));
+        System.out.println("Floor of h :" + bst.floor("h"));
+        System.out.println("Rank of a : " + bst.rank("a"));
     }
 }
 
